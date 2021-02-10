@@ -50,6 +50,7 @@ def next_passage(passages, index_file_path=INDEX_FILE_PATH):
             index = json.load(index_file)
     except FileNotFoundError:
         index = 0
+    print(f'Got index {index}')
 
     try:
         passage = passages[index]
@@ -59,6 +60,7 @@ def next_passage(passages, index_file_path=INDEX_FILE_PATH):
     index += 1
     with open(index_file_path, 'w') as index_file:
         json.dump(index, index_file)
+    print(f'Saved new index {index}')
 
     return passage
 

@@ -1,7 +1,8 @@
 # custom, template below
 .idea/
+images/
+text/index.json
 auth.json
-index.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

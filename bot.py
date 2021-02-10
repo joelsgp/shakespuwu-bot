@@ -1,18 +1,22 @@
 import json
 import time
+from pathlib import Path
+
 from uwu import owoify
 import tweepy
 
 
-TWEET_CHAR_LIMIT = 280
-CHUNKS_FILE_PATH = 'shakespuwu.json'
-INDEX_FILE_PATH = 'index.json'
+TEXT_FOLDER = Path('text')
+SOURCE_FILE_PATH = TEXT_FOLDER / 'shakespeare.txt'
+CHUNKS_FILE_PATH = TEXT_FOLDER / 'shakespuwu.json'
+INDEX_FILE_PATH = TEXT_FOLDER / 'index.json'
 
+TWEET_CHAR_LIMIT = 280
 # ten minutes
 TWEET_INTERVAL_SECONDS = 600
 
 
-def blob_to_owo_list(in_file_path='shakespeare.txt',
+def blob_to_owo_list(in_file_path=SOURCE_FILE_PATH,
                      out_file_path=CHUNKS_FILE_PATH,
                      interval=TWEET_CHAR_LIMIT):
     with open(in_file_path, encoding='utf-8') as in_file:
@@ -75,7 +79,9 @@ def main():
             print('Done!')
         else:
             api.update_status(content)
-            print(f'Tweeted: {content}')
+            # tweet_status = api.update_status(content)
+            # print(tweet_status)
+            print(f'Tweeted: \n{content}\n')
 
         print(f'Sleeping for {TWEET_INTERVAL_SECONDS} seconds.')
         time.sleep(TWEET_INTERVAL_SECONDS)

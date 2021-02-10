@@ -18,9 +18,8 @@ def blob_to_owo_list(in_file_path='shakespeare.txt',
     with open(in_file_path, encoding='utf-8') as in_file:
         read_text = in_file.read()
 
-    text_chunks = [read_text[i:i+interval] for i in range(0, len(read_text), interval)]
-
-    text_chunks = [owoify(t) for t in text_chunks]
+    owo_text = owoify(read_text)
+    text_chunks = [owo_text[i:i+interval] for i in range(0, len(owo_text), interval)]
 
     with open(out_file_path, 'w', encoding='utf-8') as out_file:
         json.dump(text_chunks, out_file)

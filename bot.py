@@ -10,10 +10,13 @@ TEXT_FOLDER = Path('text')
 SOURCE_FILE_PATH = TEXT_FOLDER / 'shakespeare.txt'
 CHUNKS_FILE_PATH = TEXT_FOLDER / 'shakespuwu.json'
 INDEX_FILE_PATH = TEXT_FOLDER / 'index.json'
+AUTH_FILE_PATH = 'auth.json'
 
 TWEET_CHAR_LIMIT = 280
 # ten minutes
 TWEET_INTERVAL_SECONDS = 600
+
+RUN_FOREVER = True
 
 
 def blob_to_owo_list(in_file_path=SOURCE_FILE_PATH,
@@ -60,9 +63,20 @@ def next_passage(passages, index_file_path=INDEX_FILE_PATH):
     return passage
 
 
+def run_once(api, passages):
+    content = next_passage(passages)
+    if content is None:
+        print('Done!')
+    else:
+        api.update_status(content)
+        # tweet_status = api.update_status(content)
+        # print(tweet_status)
+        print(f'Tweeted: \n{content}\n')
+
+
 def main():
     # load twitter stuff
-    with open('auth.json') as auth_file:
+    with open(AUTH_FILE_PATH) as auth_file:
         auth_dict = json.load(auth_file)
 
     auth = tweepy.OAuthHandler(auth_dict['consumer_key'], auth_dict['consumer_secret'])
@@ -73,18 +87,15 @@ def main():
     # load text
     passages = load_passages()
 
-    while True:
-        content = next_passage(passages)
-        if content is None:
-            print('Done!')
-        else:
-            api.update_status(content)
-            # tweet_status = api.update_status(content)
-            # print(tweet_status)
-            print(f'Tweeted: \n{content}\n')
+    if RUN_FOREVER:
+        while True:
+            run_once(api, passages)
 
-        print(f'Sleeping for {TWEET_INTERVAL_SECONDS} seconds.')
-        time.sleep(TWEET_INTERVAL_SECONDS)
+            print(f'Sleeping for {TWEET_INTERVAL_SECONDS} seconds.')
+            time.sleep(TWEET_INTERVAL_SECONDS)
+
+    else:
+        run_once(api, passages)
 
 
 if __name__ == '__main__':

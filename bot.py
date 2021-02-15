@@ -2,13 +2,14 @@ import json
 import time
 from pathlib import Path
 
-from uwu import owoify
+import uwu
+
 import tweepy
 
 
 TEXT_FOLDER = Path('text')
 SOURCE_FILE_PATH = TEXT_FOLDER / 'shakespeare.txt'
-CHUNKS_FILE_PATH = TEXT_FOLDER / 'shakespuwu.json'
+CHUNKS_FILE_PATH = TEXT_FOLDER / 'shakespeare-chunks.json'
 INDEX_FILE_PATH = TEXT_FOLDER / 'index.json'
 AUTH_FILE_PATH = 'auth.json'
 
@@ -19,14 +20,13 @@ TWEET_INTERVAL_SECONDS = 600
 RUN_FOREVER = True
 
 
-def blob_to_owo_list(in_file_path=SOURCE_FILE_PATH,
-                     out_file_path=CHUNKS_FILE_PATH,
-                     interval=TWEET_CHAR_LIMIT):
+def blob_to_list(in_file_path=SOURCE_FILE_PATH,
+                 out_file_path=CHUNKS_FILE_PATH,
+                 interval=TWEET_CHAR_LIMIT):
     with open(in_file_path, encoding='utf-8') as in_file:
         read_text = in_file.read()
 
-    owo_text = owoify(read_text)
-    text_chunks = [owo_text[i:i+interval] for i in range(0, len(owo_text), interval)]
+    text_chunks = [read_text[i:i+interval] for i in range(0, len(read_text), interval)]
 
     with open(out_file_path, 'w', encoding='utf-8') as out_file:
         json.dump(text_chunks, out_file)
@@ -39,7 +39,7 @@ def load_passages(file_path=CHUNKS_FILE_PATH):
         with open(file_path, encoding='utf-8') as chunks_file:
             passages = json.load(chunks_file)
     except FileNotFoundError:
-        passages = blob_to_owo_list()
+        passages = blob_to_list()
 
     return passages
 
@@ -56,6 +56,8 @@ def next_passage(passages, index_file_path=INDEX_FILE_PATH):
         passage = passages[index]
     except IndexError:
         return None
+    else:
+        passage = uwu.owoify(passage)
 
     index += 1
     with open(index_file_path, 'w') as index_file:

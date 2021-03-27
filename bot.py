@@ -93,10 +93,9 @@ def main():
 
     if RUN_FOREVER:
         while True:
-            run_once(api, passages)
-
             print(f'Sleeping for {TWEET_INTERVAL_SECONDS} seconds.')
             time.sleep(TWEET_INTERVAL_SECONDS)
+            run_once(api, passages)
 
     else:
         run_once(api, passages)
